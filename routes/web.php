@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::controller(Card::class)
     ->prefix('card')
     ->group(function () {
-        Route::post('', 'create');
+        Route::post('/', 'create');
         Route::get('/{id}', 'getCardsByCustomer');
     });
 
@@ -35,7 +35,7 @@ Route::controller(Menu::class)
     });
 
 // Order routes
-Route::controller(Menu::class)
+Route::controller(Order::class)
     ->prefix('order')
     ->middleware(['authen'])
     ->group(function () {
