@@ -51,5 +51,7 @@ Route::controller(User::class)
     ->middleware(['authen'])
     ->group(function () {
         Route::get('/signup', [User::class, 'userSignup']);
-        Route::get('/login', [User::class, 'userLogin']);
+        Route::get('/login', [User::class, 'userGetLogin']);
+        Route::post('/login', [User::class, 'userPostLogin']);
+        Route::get('/', [User::class, 'getAllUser']);
     });
