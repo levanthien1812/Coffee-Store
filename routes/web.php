@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Card;
+use App\Http\Controllers\Menu;
+use App\Http\Controllers\Order;
+use App\Http\Controllers\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,7 +16,40 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+// Card routes
+Route::controller(Card::class)
+    ->prefix('card')
+    ->group(function () {
+        Route::post('', 'create');
+        Route::get('/{id}', 'getCardsByCustomer');
+    });
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Menu routes
+Route::controller(Menu::class)
+    ->prefix('menu')
+    ->group(function () {
+        Route::get('/products', 'getAllItems');
+        Route::get('/products/{id}', 'getItemByID');
+        Route::get('/categories', 'getAllCategories');
+        Route::get('/categories/{id}', 'getItemsByCategory');
+    });
+
+// Order routes
+Route::controller(Menu::class)
+    ->prefix('order')
+    ->middleware(['authen'])
+    ->group(function () {
+        Route::get('/', 'getAllOrders');
+        Route::get('/customer/{id}', 'getOrdersByCustomer');
+        Route::get('/{id}', 'getOrderByID');
+        Route::post('/create', 'create');
+    });
+
+// User routes
+Route::controller(User::class)
+    ->prefix('user')
+    ->middleware(['authen'])
+    ->group(function () {
+        Route::get('/signup', [User::class, 'userSignup']);
+        Route::get('/login', [User::class, 'userLogin']);
+    });
