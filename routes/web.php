@@ -37,7 +37,7 @@ Route::controller(Menu::class)
 // Order routes
 Route::controller(Order::class)
     ->prefix('order')
-    ->middleware(['authen'])
+    // ->middleware(['authen'])
     ->group(function () {
         Route::get('/', 'getAllOrders');
         Route::get('/customer/{id}', 'getOrdersByCustomer');
@@ -50,8 +50,8 @@ Route::controller(User::class)
     ->prefix('user')
     ->middleware(['authen'])
     ->group(function () {
-        Route::get('/signup', [User::class, 'userSignup']);
-        Route::get('/login', [User::class, 'userGetLogin']);
-        Route::post('/login', [User::class, 'userPostLogin']);
-        Route::get('/', [User::class, 'getAllUser']);
+        Route::get('/signup', 'userSignup');
+        Route::get('/login', 'userGetLogin');
+        Route::post('/login', 'userPostLogin');
+        Route::get('/', 'getAllUser');
     });
