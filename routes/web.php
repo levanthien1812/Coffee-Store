@@ -17,11 +17,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 // Card routes
-Route::controller(Card::class)
-    ->prefix('card')
+Route::controller(Cart::class)
+    ->prefix('cart')
     ->group(function () {
         Route::post('/', 'create');
-        Route::get('/{id}', 'getCardsByCustomer');
+        Route::get('/{id}', 'getCartsByCustomer');
     });
 
 // Menu routes
