@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Card;
+use App\Http\Controllers\Cart;
 use App\Http\Controllers\Menu;
 use App\Http\Controllers\Order;
 use App\Http\Controllers\User;
@@ -22,6 +22,7 @@ Route::controller(Cart::class)
     ->group(function () {
         Route::post('/', 'create');
         Route::get('/{id}', 'getCartsByCustomer');
+        Route::delete('/{id}', 'deleteCart');
     });
 
 // Menu routes
