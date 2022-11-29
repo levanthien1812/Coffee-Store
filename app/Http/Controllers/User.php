@@ -97,4 +97,13 @@ class User extends Controller
             ]);
         }
     }
+
+    //logout 
+
+    function logout(Request $request){
+        auth()->user()->tokens()->delete();
+        return [
+            'message' => 'log out'
+        ];
+    }
 }
