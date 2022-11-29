@@ -63,10 +63,16 @@ Route::controller(Order::class)
 // User routes
 Route::controller(User::class)
     ->prefix('user')
-    ->middleware(['authen'])
     ->group(function () {
-        Route::get('/signup', 'userSignup');
+        Route::post('/signup', 'userSignup');
         Route::get('/login', 'userGetLogin');
         Route::post('/login', 'userPostLogin');
         Route::get('/', 'getAllUser');
     });
+
+
+
+//Protected Route
+Route::group(['middleware' => ['auth:sanctum']], function(){
+    Route::post('user/logout', [User::class,'logout']);
+});
