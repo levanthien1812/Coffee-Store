@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class User extends Controller
 {
-    //
+    //sign up
     function userSignup (Request $request){
         try{
              $fields = $request->validate([
@@ -57,5 +57,44 @@ class User extends Controller
         }
        
         
+    }
+
+    //post login
+    function userPostLogin(Request $request){
+        try{
+            $fields = $request->validate([
+                "Username" =>"required|string",
+                "Password" =>"required|string",
+            ]);
+           
+            //check username and password
+            $user = UserModel::where('Username', $fields['Username'])->first();
+
+            if(!$user || !Hash::check($fields['Password'], $user->Password)){
+                return response([
+                    'message' => 'Username hoặc Password không đúng',
+                ], 401);
+            }
+
+            //create token
+            $token=$user->createToken('myapptoken')->plainTextToken;
+
+            //find address
+            $address=Address::where('UserID', $user->id)->get();
+
+
+            $response = [
+                'user' => $user,
+                'address' => $address,
+                'token' => $token,
+            ];
+
+            return response($response);
+
+        }catch (Throwable $e){
+             return response([
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 }
