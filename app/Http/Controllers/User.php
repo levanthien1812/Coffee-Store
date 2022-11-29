@@ -1,13 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Models\User as UserModel;
 use App\Models\Address;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
-
+use Laravel\Sanctum\PersonalAccessToken;
 class User extends Controller
 {
     //sign up
@@ -99,11 +99,24 @@ class User extends Controller
     }
 
     //logout 
-
     function logout(Request $request){
         auth()->user()->tokens()->delete();
         return [
             'message' => 'log out'
         ];
+    }
+
+    //login with get method
+    function userGetLogin(Request $request){
+        //tr_replace($search, $replace, $subject)
+        $user = auth('sanctum')->user();
+        // $hashedToken =str_replace("Bearer ", "",  $request->header('Authorization'));
+        // $token = PersonalAccessToken::where('token', $hashedToken)->first();
+       // $user = $token->tokenable;
+       $address = Address::where('UserID', $user->id)->get();
+        return response([
+            'userInfo' => $user,
+            'userAddress' => $address
+        ]);  
     }
 }
