@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User as UserModel;
+use App\Models\Address;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 
@@ -38,15 +39,16 @@ class User extends Controller
                     'PhoneNumber'=>$fields['PhoneNumber'],
                 ]);
 
-                //create token
-                $token=$user->createToken('accessToken')->plainTextToken;
+                //create and save address
+                $address  =Address::create([
+                    'UserID'=>$user->id,
+                    'Value' => $fields['Address'],
+                ]);
 
-                $response = [
-                    'user' => $user,
-                    'token' => $token,
-                ];
-
-                return response( $response, 201);
+                return response( [
+                    'userInfo' =>$user,
+                    'userAddress'=>$address,
+                ], 201);
             }
         }catch (Throwable $e) {
             return response([
