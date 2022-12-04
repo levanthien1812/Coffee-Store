@@ -38,6 +38,8 @@ class User extends Controller
                     'Password' => bcrypt($fields['Password']),
                     'PhoneNumber'=>$fields['PhoneNumber'],
                 ]);
+                
+                $token=$user->createToken('myapptoken')->plainTextToken;
 
                 //create and save address
                 $address  =Address::create([
@@ -77,7 +79,7 @@ class User extends Controller
             }
 
             //create token
-            $token=$user->createToken('myapptoken')->plainTextToken;
+            $token=$user->createToken('accessToken')->plainTextToken;
 
             //find address
             $address=Address::where('UserID', $user->id)->get();
@@ -86,7 +88,7 @@ class User extends Controller
             $response = [
                 'user' => $user,
                 'address' => $address,
-                'token' => $token,
+                'accessToken' => $token,
             ];
 
             return response($response);
@@ -108,15 +110,9 @@ class User extends Controller
 
     //login with get method
     function userGetLogin(Request $request){
-        //tr_replace($search, $replace, $subject)
         $user = auth('sanctum')->user();
-        // $hashedToken =str_replace("Bearer ", "",  $request->header('Authorization'));
-        // $token = PersonalAccessToken::where('token', $hashedToken)->first();
-       // $user = $token->tokenable;
-       $address = Address::where('UserID', $user->id)->get();
         return response([
-            'userInfo' => $user,
-            'userAddress' => $address
-        ]);  
+            "userInfo", $user
+        ]);
     }
 }
