@@ -3,45 +3,41 @@
 namespace App\Http\Controllers;
 
 use Throwable;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class Cart extends Controller
 {
-    function create(Request $request) {
+    function create(Request $req)
+    {
         try {
-            $cartFields = $request->validate([
-                "itemID" => "required",
-                "quantity" => "required",
-                "size" => "required",
-                "price" => "required",
-                "customerID" => "required"
-            ]);
+            $cartFields = json_decode($req->getContent());
 
-            $customer = DB::table('users')->where('ID', $cartFields['customerID'])->first();
+            $customer = DB::table('users')->where('ID', $cartFields->CustomerID)->first();
             if (!$customer) {
                 return 'Customer not found!';
             }
 
             $cartItem = DB::table('carts')->where([
-                ['CustomerID', $cartFields['customerID']],
-                ['ItemID', $cartFields['itemID']],
-                ['Size', $cartFields['size']]
+                ['CustomerID', $cartFields->CustomerID],
+                ['ItemID', $cartFields->ItemID],
+                ['Size', $cartFields->Size]
             ])->first();
 
             $updatedCart = null;
             if ($cartItem) {
                 $updatedCart = DB::table('carts')->where('id', $cartItem->id)->update([
-                    'Quantity' => $cartItem->Quantity + $cartFields['quantity'],
-                    'Price' => $cartItem->Price + $cartFields['price']
+                    'Quantity' => $cartItem->Quantity + $cartFields->ItemID,
+                    'Price' => $cartItem->Price + $cartFields->Price
                 ]);
             } else {
                 $newCart = DB::table('carts')->insert([
-                    'ItemID' => $cartFields['itemID'],
-                    'Quantity' => $cartFields['quantity'],
-                    'Size' => $cartFields['size'],
-                    'Price' => $cartFields['price'],
-                    'CustomerID' => $cartFields['customerID'],
+                    'ItemID' => $cartFields->ItemID,
+                    'Quantity' => $cartFields->Quantity,
+                    'Size' => $cartFields->Size,
+                    'Price' => $cartFields->Price,
+                    'CustomerID' => $cartFields->CustomerID,
                     'Status' => "InCart"
                 ]);
                 if (!$newCart) {
@@ -63,7 +59,8 @@ class Cart extends Controller
         }
     }
 
-    function getCartsByCustomer(Request $request) {
+    function getCartsByCustomer(Request $request)
+    {
         try {
             $customerID = $request['id'];
             $cartsDB = DB::table('carts')->where('customerID', $customerID)->get();
@@ -79,10 +76,11 @@ class Cart extends Controller
         }
     }
 
-    function deleteCart(Request $request) {
+    function deleteCart(Request $request)
+    {
         try {
             $cartDB = DB::table('carts')->where('id', $request['id'])->delete();
-            if(!$cartDB) {
+            if (!$cartDB) {
                 throw 'Cart does not exist!';
             }
             return response()->json([
