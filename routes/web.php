@@ -16,6 +16,20 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/',function(){
+    try {
+        DB::connection()->getPdo();
+        if(DB::connection()->getDatabaseName()){
+            echo "Yes! Successfully connected to the DB: " . DB::connection()->getDatabaseName();
+        }else{
+            die("Could not find the database. Please check your configuration.");
+        }
+    } catch (\Exception $e) {
+        die("Could not open connection to database server.  Please check your configuration.");
+    }
+});
+
 // Card routes
 Route::controller(Cart::class)
     ->prefix('cart')
@@ -49,10 +63,16 @@ Route::controller(Order::class)
 // User routes
 Route::controller(User::class)
     ->prefix('user')
-    ->middleware(['authen'])
     ->group(function () {
-        Route::get('/signup', 'userSignup');
+        Route::post('/signup', 'userSignup');
         Route::get('/login', 'userGetLogin');
         Route::post('/login', 'userPostLogin');
         Route::get('/', 'getAllUser');
     });
+
+
+
+//Protected Route
+Route::group(['middleware' => ['auth:sanctum']], function(){
+    Route::post('user/logout', [User::class,'logout']);
+});
