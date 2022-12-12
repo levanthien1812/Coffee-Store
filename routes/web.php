@@ -48,10 +48,12 @@ Route::controller(Order::class)
 // User routes
 Route::controller(User::class)
     ->prefix('user')
-    ->middleware(['authen'])
+
     ->group(function () {
-        Route::get('/signup', 'userSignup');
-        Route::get('/login', 'userGetLogin');
-        Route::post('/login', 'userPostLogin');
-        Route::get('/', 'getAllUser');
+        // Route::get('/signup', 'userSignup');
+        // Route::get('/login', 'userGetLogin');
+        Route::post('/login', function() {
+            echo "Post test";
+        });
+        // Route::get('/', 'getAllUser');
     });
