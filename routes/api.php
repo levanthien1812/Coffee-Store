@@ -4,6 +4,7 @@ use App\Http\Controllers\Cart;
 use App\Http\Controllers\Menu;
 use App\Http\Controllers\Order;
 use App\Http\Controllers\User;
+use App\Http\Controllers\Blog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -56,6 +57,13 @@ Route::controller(User::class)
         Route::get('/', 'getAllUser');
     });
 
+    // Menu routes
+Route::controller(Blog::class)
+->prefix('blog')
+->group(function () {
+    Route::get('/', 'getAllBlogs');
+    Route::get('/{id}', 'getBlogByID');
+});
 
 
 //Protected Route
