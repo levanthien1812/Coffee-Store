@@ -47,15 +47,19 @@ class User extends Controller
                     'Value' => $fields['Address'],
                 ]);
 
-                return response( [
+                $data= [
                     'userInfo' =>$user,
                     'userAddress'=>$address,
+                ];
+
+                return response( [
+                    'data' => $data,
                 ], 201);
             }
         }catch (Throwable $e) {
             return response([
                 'message' => $e->getMessage()
-            ]);
+            ], 401);
         }
        
         
@@ -84,11 +88,15 @@ class User extends Controller
             //find address
             $address=Address::where('UserID', $user->id)->get();
 
-
+            $userInfo = 
             $response = [
-                'user' => $user,
-                'address' => $address,
+                'message' =>'Đăng nhập thành công',
                 'accessToken' => $token,
+                'userInfo' => [
+                    'user' => $user,
+                    'address' => $address,
+                ]
+               
             ];
 
             return response($response);

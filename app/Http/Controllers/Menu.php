@@ -9,12 +9,20 @@ use Illuminate\Http\Request;
 
 class Menu extends Controller
 {
+    function getBestSeller(){
+        $itemsDB = Item::with('category')->skip(0)->take(10)->get();;
+
+        return response()->json([
+            'message' => 'Get Bestseller',
+            'data' => $itemsDB
+        ]);
+    }
     function getAllItems () {
         $itemsDB = Item::with('category')->get();
 
         return response()->json([
-            'Message' => 'Get All Products',
-            'Data' => $itemsDB
+            'message' => 'Get All Products',
+            'data' => $itemsDB
         ]);
     }
 
@@ -31,12 +39,12 @@ class Menu extends Controller
 
         if($itemDB){
             return response()->json([
-                'Message' => 'Get Product',
-                'Data' => $itemDB
+                'message' => 'Get Product',
+                'data' => $itemDB
             ]);
         }else{
             return response()->json([
-                'Message' => 'Product invalid'
+                'message' => 'Product invalid'
             ]);
         }
     }
@@ -53,8 +61,8 @@ class Menu extends Controller
         $itemsDB = Item::with('category')->where('Type', $id)->get();
 
         return response()->json([
-            'Message' => 'Get Products By Category',
-            'Data' => $itemsDB
+            'message' => 'Get Products By Category',
+            'data' => $itemsDB
         ]);
     }
 
@@ -62,8 +70,8 @@ class Menu extends Controller
         $categoriesDB = Category::all();
 
         return response()->json([
-            'Message' => 'Get All Category',
-            'Data' => $categoriesDB
+            'message' => 'Get All Category',
+            'data' => $categoriesDB
         ]);
     }
 }
