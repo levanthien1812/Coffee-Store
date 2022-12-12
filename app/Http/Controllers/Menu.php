@@ -11,7 +11,6 @@ class Menu extends Controller
 {
     function getBestSeller(){
         $itemsDB = Item::with('category')->skip(0)->take(10)->get();;
-
         return response()->json([
             'message' => 'Get Bestseller',
             'data' => $itemsDB

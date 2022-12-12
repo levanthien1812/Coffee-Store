@@ -23,6 +23,7 @@ return new class extends Migration
             $table->unsignedBigInteger('Type');
             $table->foreign('Type')->references('id')->on('categories')->onDelete('cascade');
             $table->timestamps();
+            $table->string('Description');
         });
     }
 
