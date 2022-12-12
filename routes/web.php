@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Card;
+use App\Http\Controllers\Cart;
 use App\Http\Controllers\Menu;
 use App\Http\Controllers\Order;
 use App\Http\Controllers\User;
@@ -16,12 +16,16 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/', [Menu::class,'getBestSeller']);
+
 // Card routes
 Route::controller(Cart::class)
     ->prefix('cart')
     ->group(function () {
         Route::post('/', 'create');
         Route::get('/{id}', 'getCartsByCustomer');
+        Route::delete('/{id}', 'deleteCart');
     });
 
 // Menu routes
@@ -48,12 +52,16 @@ Route::controller(Order::class)
 // User routes
 Route::controller(User::class)
     ->prefix('user')
-
     ->group(function () {
-        // Route::get('/signup', 'userSignup');
-        // Route::get('/login', 'userGetLogin');
-        Route::post('/login', function() {
-            echo "Post test";
-        });
-        // Route::get('/', 'getAllUser');
+        Route::post('/signup', 'userSignup');
+        Route::get('/login', 'userGetLogin');
+        Route::post('/login', 'userPostLogin');
+        Route::get('/', 'getAllUser');
     });
+
+
+
+//Protected Route
+Route::group(['middleware' => ['auth:sanctum']], function(){
+    Route::post('user/logout', [User::class,'logout']);
+});
