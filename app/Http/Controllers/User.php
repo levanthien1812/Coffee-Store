@@ -119,8 +119,57 @@ class User extends Controller
     //login with get method
     function userGetLogin(Request $request){
         $user = auth('sanctum')->user();
+        $address=Address::where('UserID', $user->id)->get();
         return response([
-            "userInfo", $user
+                "user" => $user,
+                "address"=>$address,
         ]);
+    }
+
+    //update user
+    function updateUser(Request $request){
+        try{
+            if($request["Password"]){
+                $updatedUser = UserModel::where('id', $request['id'])
+                ->update([
+                        'Username' => $request['Username'],
+                        'Fullname' => $request['Fullname'],
+                        'PhoneNumber' => $request['PhoneNumber'],
+                        'Password' => bcrypt($request['Password']),
+                ]);
+            }else{
+                //update user information
+                $updatedUser = UserModel::where('id', $request['id'])
+                ->update([
+                        'Username' => $request['Username'],
+                        'Fullname' => $request['Fullname'],
+                        'PhoneNumber' => $request['PhoneNumber'],
+                ]);
+            }
+            
+            //update user addresses
+            Address::where('UserID', $request['id'])
+            ->update([
+                'Value' => $request['Address'],
+            ]);
+
+
+            $user = UserModel::where('id', $request['id'])->first();
+            
+            $address =  Address::where('UserID', $request['id'])->get("Value");
+
+            $response = [
+                    'userInfo' => $user,
+                    'address' => $address,
+            ];
+
+            return response($response);
+
+         }catch (Throwable $e){
+             return response([
+                'message' => $e->getMessage()
+            ]);
+        }
+        
     }
 }

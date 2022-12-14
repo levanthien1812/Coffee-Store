@@ -30,21 +30,31 @@ class Order extends Controller
     function getOrdersByCustomer(Request $request) {
         try {
             $customerID = $request->id;
+            //ktra user
             $customer = DB::table('users')->where('id', $customerID)->get();
             if (!$customer) {
                 return response()->json([
                     'message' => 'Customer not found!'
                 ]);
             }
+            //get all orders
             $ordersDB = DB::table('receipts')
-                ->join('detail_receipts', 'receipts.id', '=', 'detail_receipts.ReceiptID')
                 ->where('CustomerID', $customerID)
                 ->get();
+
+            for($i = 0; $i < count($ordersDB); $i++){
+                $detailOrder = DB::table('detail_receipts')->where('ReceiptID', $ordersDB[$i]->id)->get();
+                for($j = 0; $j < count($detailOrder); $j++){
+                    $items = DB::table('items')->where('id', $detailOrder[$j]->ItemID)->first(["Name", "Image"]);
+                    $detailOrder[$j]->Item = $items;
+                }
+                $ordersDB[$i]->DetailOrder = $detailOrder;
+            }
+
             if ($ordersDB)
                 return response()->json([
-                    'message' => 'Get orders by customer successfully!',
-                    'quantity' => $ordersDB->count(),
-                    'data' => $ordersDB
+                    'Message' => 'Get orders by customer successfully!',
+                    'Orders' => $ordersDB
                 ]);
             else
                 return response()->json([
@@ -59,20 +69,26 @@ class Order extends Controller
     function getOrderByID(Request $request) {
         try {
             $receiptID = $request->id;
-            $receipt = DB::table('receipts')->where('id', $receiptID)->get();
+            $receipt = DB::table('receipts')->where('id', $receiptID)->first(["id","PhoneNumber", "Address","TotalAmount", "CustomerID" ]);
             if (!$receipt)
                 return response()->json([
                     'message' => 'Receipt not found!'
                 ]);
                 
-            $detailReceipt = DB::table('receipts')
-                ->join('detail_receipts', 'receipts.id', '=', 'detail_receipts.ReceiptID')
-                ->where('receipts.id', $receiptID)
+            $detailReceipt = DB::table('detail_receipts')
+                ->where('ReceiptID', $receiptID)
                 ->get();
 
+            for($i = 0; $i < count($detailReceipt); $i++){
+                $item = DB::table('items')->where('id', $detailReceipt[$i]->ItemID)->first(["Name", "Image"]);
+                $detailReceipt[$i]->Item = $item;
+            }
+
+            $receipt->DetailOrder = $detailReceipt;
+
             return response()->json([
-                'message' => 'Get order successfully',
-                'data' => $detailReceipt
+                'Message' => 'Get Order By ID Success',
+                'Orders' => $receipt
             ]);
         } catch (Throwable $e) {
             return response()->json([
@@ -100,7 +116,7 @@ class Order extends Controller
             foreach ($orderReq->Items as $Item) {
                 // $Item = DB:table('items')->where('id', $ItemReq);
                 $newDetailRec = DB::table('detail_receipts')->insert([
-                    'ItemID' => $Item->id,
+                    'ItemID' => $Item->ID,
                     'ReceiptID' => $newReceiptID,
                     'Quantity' => $Item->Quantity,
                     'Size' => $Item->Size,
@@ -116,8 +132,9 @@ class Order extends Controller
                 'data' => $newReceiptID
             ]);
         } catch (Throwable $e) {
+            error_log('Some message here.'.$e);
             return response()->json([
-                'message' => $e->getMessage()
+                'message error' => $e
             ]);
         }
     }

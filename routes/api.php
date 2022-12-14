@@ -23,7 +23,7 @@ Route::controller(Cart::class)
     ->group(function () {
         Route::post('/', 'create');
         Route::get('/{id}', 'getCartsByCustomer');
-        Route::delete('/{id}', 'deleteCart');
+        Route::delete('/', 'deleteCart');
     });
 
 // Menu routes
@@ -51,6 +51,7 @@ Route::controller(Order::class)
 Route::controller(User::class)
     ->prefix('user')
     ->group(function () {
+        Route::post('/update', 'updateUser');
         Route::post('/signup', 'userSignup');
         Route::get('/login', 'userGetLogin');
         Route::post('/login', 'userPostLogin');
