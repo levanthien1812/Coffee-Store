@@ -69,7 +69,7 @@ class Order extends Controller
     function getOrderByID(Request $request) {
         try {
             $receiptID = $request->id;
-            $receipt = DB::table('receipts')->where('id', $receiptID)->first(["id","PhoneNumber", "Address","TotalAmount", "CustomerID" ]);
+            $receipt = DB::table('receipts')->where('id', $receiptID)->first();
             if (!$receipt)
                 return response()->json([
                     'message' => 'Receipt not found!'
@@ -105,6 +105,8 @@ class Order extends Controller
                 'PhoneNumber' => $orderReq->PhoneNumber,
                 'Address' => $orderReq->Address,
                 'TotalAmount' => $orderReq->TotalAmount,
+                'created_at' => now(),   
+                'updated_at' => now(),
             ];
 
             if (!$orderReq) throw 'Fail to get request\' body';
@@ -121,6 +123,7 @@ class Order extends Controller
                     'Quantity' => $Item->Quantity,
                     'Size' => $Item->Size,
                     'Price' => $Item->Price,
+                   
                 ]);
                 if(!$newDetailRec) {
                     throw 'Fail to insert Detail receipt';
