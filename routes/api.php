@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+//cart routes
 Route::controller(Cart::class)
     ->prefix('cart')
     ->group(function () {
@@ -59,6 +61,8 @@ Route::controller(User::class)
     });
 
     // Menu routes
+
+//blogs
 Route::controller(Blog::class)
 ->prefix('blog')
 ->group(function () {
