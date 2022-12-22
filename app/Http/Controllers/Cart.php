@@ -30,7 +30,7 @@ class Cart extends Controller
             $updatedCart = null;
             if ($cartItem) {
                 $updatedCart = DB::table('carts')->where('id', $cartItem->id)->update([
-                    'Quantity' => $cartItem->Quantity + $cartFields->ItemID,
+                    'Quantity' => $cartItem->Quantity + $cartFields->Quantity,
                     'Price' => $cartItem->Price + $cartFields->Price
                 ]);
             } else {
