@@ -1,11 +1,5 @@
 <?php
 
-use App\Http\Controllers\Cart;
-use App\Http\Controllers\Menu;
-use App\Http\Controllers\Order;
-use App\Http\Controllers\User;
-use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
